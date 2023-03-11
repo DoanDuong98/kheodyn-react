@@ -46,6 +46,14 @@ $grey600: #4B5565;
 $grey700: #364152;
 $grey900: #121926;
 
+// info
+$lighter: #D0F2FF;
+$light: #74CAFF;
+$main: #1890FF;
+$dark: #0C53B7;
+$darker: #04297A;
+$contrastText: #fff;
+
 // ==============================|| DARK THEME VARIANTS ||============================== //
 
 // paper & background
@@ -125,6 +133,13 @@ $darkTextSecondary: #8492c4;
     grey600: $grey600;
     grey700: $grey700;
     grey900: $grey900;
+
+    lighter: $lighter;
+    light: $light;
+    main: $main;
+    dark: $dark;
+    darker: $darker;
+    contrastText: $contrastText;
 
     // ==============================|| DARK THEME VARIANTS ||============================== //
 

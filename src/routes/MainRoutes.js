@@ -8,14 +8,11 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
 // utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
-const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
-const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
-const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
+const Products = Loadable(lazy(() => import('views/utilities/Products')));
+const Money = Loadable(lazy(() => import('views/utilities/Money')));
 
 // sample page routing
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
+const Orders = Loadable(lazy(() => import('views/utilities/Orders')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -29,61 +26,19 @@ const MainRoutes = {
         },
         {
             path: 'dashboard',
-            children: [
-                {
-                    path: 'default',
-                    element: <DashboardDefault />
-                }
-            ]
+            element: <DashboardDefault />
         },
         {
-            path: 'utils',
-            children: [
-                {
-                    path: 'util-typography',
-                    element: <UtilsTypography />
-                }
-            ]
+            path: 'products',
+            element: <Products />
         },
         {
-            path: 'utils',
-            children: [
-                {
-                    path: 'util-color',
-                    element: <UtilsColor />
-                }
-            ]
+            path: 'orders',
+            element: <Orders />
         },
         {
-            path: 'utils',
-            children: [
-                {
-                    path: 'util-shadow',
-                    element: <UtilsShadow />
-                }
-            ]
-        },
-        {
-            path: 'icons',
-            children: [
-                {
-                    path: 'tabler-icons',
-                    element: <UtilsTablerIcons />
-                }
-            ]
-        },
-        {
-            path: 'icons',
-            children: [
-                {
-                    path: 'material-icons',
-                    element: <UtilsMaterialIcons />
-                }
-            ]
-        },
-        {
-            path: 'sample-page',
-            element: <SamplePage />
+            path: 'money',
+            element: <Money />
         }
     ]
 };

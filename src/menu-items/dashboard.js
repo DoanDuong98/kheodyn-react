@@ -13,9 +13,9 @@ const dashboard = {
     children: [
         {
             id: 'default',
-            title: 'Dashboard',
+            title: 'Thống kê',
             type: 'item',
-            url: '/dashboard/default',
+            url: '/dashboard',
             icon: icons.IconDashboard,
             breadcrumbs: false
         }

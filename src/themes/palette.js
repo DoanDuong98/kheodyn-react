@@ -23,6 +23,14 @@ export default function themePalette(theme) {
             200: theme.colors?.secondary200,
             800: theme.colors?.secondary800
         },
+        info: {
+            lighter: theme.colors,
+            light: theme.colors?.light,
+            main: theme.colors?.main,
+            dark: theme.colors?.dark,
+            darker: theme.colors?.darker,
+            contrastText: theme.colors?.contrastText
+        },
         error: {
             light: theme.colors?.errorLight,
             main: theme.colors?.errorMain,

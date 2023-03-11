@@ -1,66 +1,43 @@
 // assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+import { IconListCheck, IconMoneybag, IconBuildingStore } from '@tabler/icons';
 
 // constant
 const icons = {
-    IconTypography,
-    IconPalette,
-    IconShadow,
-    IconWindmill
+    IconBuildingStore,
+    IconListCheck,
+    IconMoneybag
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
-    id: 'utilities',
-    title: 'Utilities',
+    id: 'management',
+    title: 'Quản lí',
     type: 'group',
     children: [
         {
-            id: 'util-typography',
-            title: 'Typography',
+            id: 'products',
+            title: 'Sản phẩm',
             type: 'item',
-            url: '/utils/util-typography',
-            icon: icons.IconTypography,
+            url: '/products',
+            icon: icons.IconBuildingStore,
             breadcrumbs: false
         },
         {
-            id: 'util-color',
-            title: 'Color',
+            id: 'orders',
+            title: 'Đơn hàng',
             type: 'item',
-            url: '/utils/util-color',
-            icon: icons.IconPalette,
+            url: '/orders',
+            icon: icons.IconListCheck,
             breadcrumbs: false
         },
         {
-            id: 'util-shadow',
-            title: 'Shadow',
+            id: 'moeny',
+            title: 'Chi tiêu',
             type: 'item',
-            url: '/utils/util-shadow',
-            icon: icons.IconShadow,
+            url: '/money',
+            icon: icons.IconMoneybag,
             breadcrumbs: false
-        },
-        {
-            id: 'icons',
-            title: 'Icons',
-            type: 'collapse',
-            icon: icons.IconWindmill,
-            children: [
-                {
-                    id: 'tabler-icons',
-                    title: 'Tabler Icons',
-                    type: 'item',
-                    url: '/icons/tabler-icons',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'material-icons',
-                    title: 'Material Icons',
-                    type: 'item',
-                    url: '/icons/material-icons',
-                    breadcrumbs: false
-                }
-            ]
         }
     ]
 };

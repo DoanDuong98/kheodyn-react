@@ -7,6 +7,8 @@ import colors from 'assets/scss/_themes-vars.module.scss';
 import componentStyleOverrides from './compStyleOverride';
 import themePalette from './palette';
 import themeTypography from './typography';
+import themeCustomShadow from './customShadow';
+import themeShadow from './shadows';
 
 /**
  * Represent theme style and structure as per Material-UI
@@ -43,7 +45,9 @@ export const theme = (customization) => {
                 }
             }
         },
-        typography: themeTypography(themeOption)
+        typography: themeTypography(themeOption),
+        shadows: themeShadow(themeOption),
+        customShadows: themeCustomShadow(themeOption)
     };
 
     const themes = createTheme(themeOptions);
