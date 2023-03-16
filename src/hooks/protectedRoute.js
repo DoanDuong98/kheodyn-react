@@ -1,8 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from 'hooks/useAuth';
 
 export const ProtectedRoute = ({ children }) => {
-    const { user } = useAuth();
+    const user = localStorage.getItem('user');
     const { pathname } = useLocation();
     const publicRoute = ['/login', '/register'];
 

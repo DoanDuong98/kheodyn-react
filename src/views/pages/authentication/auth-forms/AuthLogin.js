@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -34,15 +33,23 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import Google from 'assets/images/icons/social-google.svg';
+import { auth } from '../../../../firebase';
+import { SET_CURRENT_USER } from 'store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { NotificationManager } from 'react-notifications';
+import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
     const [checked, setChecked] = useState(true);
+    const navigate = useNavigate();
 
     const googleHandler = async () => {
         console.error('Login');
@@ -55,6 +62,25 @@ const FirebaseLogin = ({ ...others }) => {
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
+    };
+
+    const loginUser = (body) => {
+        signInWithEmailAndPassword(auth, body?.email, body?.password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                dispatch({ type: SET_CURRENT_USER, user });
+                localStorage.setItem('user', JSON.stringify({ user: user.providerData, uid: user.uid }));
+                localStorage.setItem('accessToken', user.accessToken);
+                NotificationManager.success('Đăng nhập thành công!', 'Thông báo');
+                navigate('/dashboard');
+                console.log('User', user);
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+                NotificationManager.error(errorMessage || 'Đăng nhập thất bại!', 'Thông báo');
+            });
     };
 
     return (
@@ -120,8 +146,8 @@ const FirebaseLogin = ({ ...others }) => {
 
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    email: 'duongdv@haposoft.com',
+                    password: 'Mk123456',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
@@ -130,6 +156,7 @@ const FirebaseLogin = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
+                        loginUser(values);
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);

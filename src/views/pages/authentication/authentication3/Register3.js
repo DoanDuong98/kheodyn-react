@@ -10,37 +10,14 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthRegister from '../auth-forms/AuthRegister';
 import AuthFooter from 'ui-component/cards/AuthFooter';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../../firebase';
-import { SET_CURRENT_USER } from 'store/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { NotificationManager } from 'react-notifications';
 
 // assets
 
 // ===============================|| AUTH3 - REGISTER ||=============================== //
 
 const Register = () => {
-    const dispatch = useDispatch();
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-
-    const registerUser = async () => {
-        await createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                dispatch({ type: SET_CURRENT_USER, user });
-                console.log(user);
-                NotificationManager.success('Success message', 'Thông báo');
-                navigate('/login');
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-                // ..
-            });
-    };
 
     return (
         <AuthWrapper1>
@@ -69,9 +46,7 @@ const Register = () => {
                                                         gutterBottom
                                                         variant={matchDownSM ? 'h3' : 'h2'}
                                                     >
-                                                        <Button onClick={registerUser} variant="text">
-                                                            Sign up
-                                                        </Button>
+                                                        <Button variant="text">Sign up</Button>
                                                     </Typography>
                                                     <Typography
                                                         variant="caption"

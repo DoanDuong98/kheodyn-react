@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -35,11 +34,17 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../../firebase';
+import { useSelector } from 'react-redux';
+import { NotificationManager } from 'react-notifications';
+import { useNavigate } from 'react-router-dom';
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
 const FirebaseRegister = ({ ...others }) => {
     const theme = useTheme();
+    const navigate = useNavigate();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
@@ -48,6 +53,21 @@ const FirebaseRegister = ({ ...others }) => {
 
     const [strength, setStrength] = useState(0);
     const [level, setLevel] = useState();
+
+    const registerUser = (body) => {
+        createUserWithEmailAndPassword(auth, body?.email, body?.password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                NotificationManager.success('Đăng kí thành công rồi he!', 'Thông báo');
+                navigate('/login');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+                NotificationManager.error(errorMessage || 'Đăng kí thất bại rồi he!', 'Thông báo');
+            });
+    };
 
     const googleHandler = async () => {
         console.error('Register');
@@ -136,6 +156,7 @@ const FirebaseRegister = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
+                        registerUser(values);
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);
