@@ -73,7 +73,6 @@ const FirebaseLogin = ({ ...others }) => {
                 localStorage.setItem('accessToken', user.accessToken);
                 NotificationManager.success('Đăng nhập thành công!', 'Thông báo');
                 navigate('/dashboard');
-                console.log('User', user);
             })
             .catch((error) => {
                 const errorCode = error.code;
