@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import { HelmetProvider } from 'react-helmet-async';
+import { ProtectedRoute } from 'hooks/protectedRoute';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
 
 // routing
 import Routes from 'routes';
@@ -19,16 +22,19 @@ const App = () => {
     const customization = useSelector((state) => state.customization);
 
     return (
-        <HelmetProvider>
-            <StyledEngineProvider injectFirst>
-                <ThemeProvider theme={themes(customization)}>
-                    <CssBaseline />
-                    <NavigationScroll>
-                        <Routes />
-                    </NavigationScroll>
-                </ThemeProvider>
-            </StyledEngineProvider>
-        </HelmetProvider>
+        <ProtectedRoute>
+            <HelmetProvider>
+                <StyledEngineProvider injectFirst>
+                    <ThemeProvider theme={themes(customization)}>
+                        <CssBaseline />
+                        <NavigationScroll>
+                            <Routes />
+                            <NotificationContainer />
+                        </NavigationScroll>
+                    </ThemeProvider>
+                </StyledEngineProvider>
+            </HelmetProvider>
+        </ProtectedRoute>
     );
 };
 
