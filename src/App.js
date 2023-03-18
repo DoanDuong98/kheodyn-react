@@ -6,7 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ProtectedRoute } from 'hooks/protectedRoute';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer } from 'react-notifications';
-
+import 'styles/_global.scss';
 // routing
 import Routes from 'routes';
 

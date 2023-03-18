@@ -28,7 +28,7 @@ const CreateProduct = () => {
                 <Stack
                     sx={{
                         border: '1px solid #ffff',
-                        p: 2,
+                        p: 3,
                         backgroundColor: '#ffff',
                         borderRadius: 1,
                         boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px'
@@ -42,11 +42,16 @@ const CreateProduct = () => {
                         direction="row"
                         justifyContent="center"
                         alignItems="center"
-                        sx={{ width: 300, height: 300, border: '1px solid #000', borderRadius: 1 }}
+                        sx={{
+                            width: 300,
+                            height: 300,
+                            boxShadow: 'rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px',
+                            borderRadius: 1
+                        }}
                     >
                         <IconButton color="primary" aria-label="upload picture" component="label">
                             <input hidden accept="image/*" type="file" />
-                            <PhotoCamera />
+                            <PhotoCamera sx={{ fontSize: 42 }} />
                         </IconButton>
                     </Stack>
                     <Stack
@@ -64,6 +69,7 @@ const CreateProduct = () => {
                         >
                             <TextField required id="name" label="Tên sản phẩm" defaultValue="Hoa hướng dương" />
                             <TextField required id="quantity" label="Số lượng" type="number" defaultValue={10} />
+                            <TextField required id="quantity" label="Số lượng sản phầm đã bán" type="number" defaultValue={2} />
                             <TextField
                                 required
                                 id="price"
@@ -80,6 +86,13 @@ const CreateProduct = () => {
                                 defaultValue={[top100Films[1]]}
                                 filterSelectedOptions
                                 renderInput={(params) => <TextField {...params} label="Phân loại sản phẩm" placeholder="Phân loại" />}
+                            />
+                            <TextField
+                                id="outlined-multiline-static"
+                                label="Ghi chú"
+                                multiline
+                                rows={5}
+                                defaultValue="Ghi chú cho sản phẩm"
                             />
                             <CKEditor
                                 editor={ClassicEditor}
