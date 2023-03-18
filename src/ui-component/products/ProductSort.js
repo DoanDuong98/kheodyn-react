@@ -32,9 +32,9 @@ export default function ShopProductSort() {
                 onClick={handleOpen}
                 endIcon={<Iconify icon={open ? 'eva:chevron-up-fill' : 'eva:chevron-down-fill'} />}
             >
-                Sort By:&nbsp;
+                Sắp xếp :&nbsp;
                 <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                    Newest
+                    Mới nhất
                 </Typography>
             </Button>
             <Menu

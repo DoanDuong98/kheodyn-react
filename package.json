@@ -2,8 +2,10 @@
     "name": "berry-material-react-free",
     "version": "3.3.1",
     "private": true,
-    "homepage": "https://berrydashboard.io/free",
+    "homepage": "https://berrydashboard.io/",
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^36.0.1",
+        "@ckeditor/ckeditor5-react": "^5.1.0",
         "@emotion/cache": "^11.9.3",
         "@emotion/react": "^11.9.3",
         "@emotion/styled": "^11.9.3",

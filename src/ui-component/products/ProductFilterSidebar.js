@@ -50,7 +50,7 @@ export default function ShopFilterSidebar({ openFilter, onOpenFilter, onCloseFil
     return (
         <>
             <Button disableRipple color="inherit" endIcon={<Iconify icon="ic:round-filter-list" />} onClick={onOpenFilter}>
-                Filters&nbsp;
+                Phân loại&nbsp;
             </Button>
 
             <Drawer
@@ -162,7 +162,7 @@ export default function ShopFilterSidebar({ openFilter, onOpenFilter, onCloseFil
                         variant="outlined"
                         startIcon={<Iconify icon="ic:round-clear-all" />}
                     >
-                        Clear All
+                        Loại bỏ lọc
                     </Button>
                 </Box>
             </Drawer>
