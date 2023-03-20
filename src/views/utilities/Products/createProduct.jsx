@@ -1,21 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Container, Stack, Typography, Button, IconButton, Box, TextField, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
-const top100Films = [
-    { title: 'DYI', year: 1994 },
-    { title: 'Thành phẩm', year: 1972 },
-    { title: 'Hoa', year: 1974 },
-    { title: 'Thú', year: 2008 },
-    { title: 'Gương', year: 1957 },
-    { title: 'Khác', year: 1993 }
-];
-
+const listType = ['DYI', 'Thành phẩm', 'Hoa', 'Thú', 'Gương', 'Khác'];
 const CreateProduct = () => {
+    const [category, setCategory] = useState([{ id: 1, type: 'Trắng', category: 'DYI', total: 10, sold: 3 }]);
+    const handleAddCategory = () => setCategory([...category, { id: new Date().getTime(), category: '', color: '', total: 0, sold: 0 }]);
+    const handleRemoveCategory = (id) => {
+        const newList = [...category].filter((item) => item.id !== id);
+        setCategory(newList);
+    };
+
     return (
         <>
             <Helmet>
@@ -23,7 +24,7 @@ const CreateProduct = () => {
             </Helmet>
             <Container>
                 <Typography variant="h4" sx={{ mb: 5 }}>
-                    Tạo mới sảm phẩm
+                    Tạo mới sản phẩm
                 </Typography>
                 <Stack
                     sx={{
@@ -56,7 +57,7 @@ const CreateProduct = () => {
                     </Stack>
                     <Stack
                         sx={{
-                            width: '60%'
+                            width: '65%'
                         }}
                     >
                         <Box
@@ -80,25 +81,70 @@ const CreateProduct = () => {
                             />
                             <Autocomplete
                                 multiple
-                                id="tags-outlined"
-                                options={top100Films}
-                                getOptionLabel={(option) => option.title}
-                                defaultValue={[top100Films[1]]}
-                                filterSelectedOptions
-                                renderInput={(params) => <TextField {...params} label="Phân loại sản phẩm" placeholder="Phân loại" />}
+                                id="type2"
+                                options={listType}
+                                defaultValue={[listType[1]]}
+                                renderInput={(params) => <TextField {...params} label="Loại sản phẩm" placeholder="Phân loại" />}
                             />
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="Ghi chú"
-                                multiline
-                                rows={5}
-                                defaultValue="Ghi chú cho sản phẩm"
-                            />
+                            <TextField id="note" label="Ghi chú" multiline rows={5} defaultValue="Ghi chú cho sản phẩm" />
+                            <Typography variant="h5" sx={{ mb: 1 }}>
+                                Phân loại sản phẩm
+                            </Typography>
+                            {category.map((item, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        gap: 1,
+                                        alignItems: 'center',
+                                        mb: 2,
+                                        '& .MuiTextField-root': {
+                                            mb: 0,
+                                            '&:nth-child(3)': {
+                                                width: 180
+                                            },
+                                            '&:nth-child(1)': {
+                                                width: 240
+                                            },
+                                            '&:nth-child(4)': {
+                                                width: 180
+                                            }
+                                        }
+                                    }}
+                                >
+                                    <TextField label="Loại" id="category-type" value={item.type} size="small" />
+                                    <Autocomplete
+                                        id="type"
+                                        sx={{ width: 300 }}
+                                        size="small"
+                                        options={listType}
+                                        value={item.category}
+                                        renderInput={(params) => <TextField {...params} label="Loại sản phẩm" placeholder="Phân loại" />}
+                                    />
+                                    <TextField label="Số lượng" id="category-number" type="number" value={item.total} size="small" />
+                                    <TextField label="Đã bán" id="category-number" type="number" value={item.sold} size="small" />
+                                    <RemoveCircleIcon
+                                        onClick={() => handleRemoveCategory(item.id)}
+                                        color="secondary"
+                                        sx={{ mb: 0, cursor: 'pointer' }}
+                                    />
+                                </Box>
+                            ))}
+                            <Button
+                                onClick={handleAddCategory}
+                                color="secondary"
+                                sx={{ mb: 4 }}
+                                variant="contained"
+                                endIcon={<AddCircleIcon />}
+                            >
+                                Thêm loại
+                            </Button>
+
                             <CKEditor
                                 editor={ClassicEditor}
                                 data="<p>Mô tả sản phẩm</p>"
                                 onReady={(editor) => {
-                                    // You can store the "editor" and use when it is needed.
                                     console.log('Editor is ready to use!', editor);
                                 }}
                                 onChange={(event, editor) => {
