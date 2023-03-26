@@ -7,14 +7,99 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage, firestore } from '../../../firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { FIRESTORE } from '../../../constants';
+import { useNavigate } from 'react-router-dom';
+import { NotificationManager } from 'react-notifications';
 
 const listType = ['DYI', 'Thành phẩm', 'Hoa', 'Thú', 'Gương', 'Khác'];
+const INIT_DATA = {
+    name: '',
+    price: '',
+    total: '',
+    sold: '',
+    type: [],
+    note: '',
+    category: [],
+    description: '',
+    image: ''
+};
+
 const CreateProduct = () => {
-    const [category, setCategory] = useState([{ id: 1, type: 'Trắng', category: 'DYI', total: 10, sold: 3 }]);
-    const handleAddCategory = () => setCategory([...category, { id: new Date().getTime(), category: '', color: '', total: 0, sold: 0 }]);
+    const [dataForm, setDataForm] = useState(INIT_DATA);
+    const [loading, setLoading] = useState(false);
+    const handleAddCategory = () =>
+        setDataForm({
+            ...dataForm,
+            category: [...dataForm.category, { id: new Date().getTime(), category: '', color: '', total: 0, sold: 0 }]
+        });
     const handleRemoveCategory = (id) => {
-        const newList = [...category].filter((item) => item.id !== id);
-        setCategory(newList);
+        const newList = [...dataForm.category].filter((item) => item.id !== id);
+        setDataForm({ ...dataForm, category: newList });
+    };
+    const navigate = useNavigate();
+
+    const handleChangeInput = (key, value) => {
+        const newData = { ...dataForm };
+        if (key?.includes('category')) {
+            const newCategory = [...dataForm.category];
+            newCategory[key[2]][key[1]] = value;
+            newData.category = newCategory;
+        } else newData[key] = value;
+        setDataForm(newData);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const { image, ...rest } = dataForm;
+        if (Object.values(rest).filter((x) => !x || !x.length).length > 0 || !image) {
+            NotificationManager.warning('Vui lòng điền đầy đủ các trường!', 'Thông báo');
+            setLoading(false);
+            return;
+        }
+
+        const storageRef = ref(storage, `files/${image.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                console.log(progress);
+            },
+            (error) => {
+                console.log(error);
+                NotificationManager.error('Có lỗi xảy ra!', 'Thông báo');
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    const dataBody = {
+                        ...dataForm,
+                        image: downloadURL,
+                        type: JSON.stringify(dataForm.type),
+                        category: JSON.stringify(dataForm.category),
+                        created_at: new Date().valueOf(),
+                        updated_at: new Date().valueOf(),
+                        deleted_at: ''
+                    };
+                    addDoc(collection(firestore, FIRESTORE.PRODUCTS), dataBody)
+                        .then((response) => {
+                            console.log(response);
+                            setDataForm(INIT_DATA);
+                            NotificationManager.success('Tạo mới sản phẩm thành công!', 'Thông báo');
+                            navigate('/products');
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            NotificationManager.error('Có lỗi xảy ra!', 'Thông báo');
+                        });
+                });
+            }
+        );
+        setLoading(false);
     };
 
     return (
@@ -50,10 +135,19 @@ const CreateProduct = () => {
                             borderRadius: 1
                         }}
                     >
-                        <IconButton color="primary" aria-label="upload picture" component="label">
-                            <input hidden accept="image/*" type="file" />
-                            <PhotoCamera sx={{ fontSize: 42 }} />
-                        </IconButton>
+                        {!dataForm.image ? (
+                            <IconButton color="secondary" aria-label="upload picture" component="label">
+                                <input
+                                    hidden
+                                    accept="image/*"
+                                    type="file"
+                                    onChange={(e) => handleChangeInput('image', e.target.files[0])}
+                                />
+                                <PhotoCamera sx={{ fontSize: 42 }} />
+                            </IconButton>
+                        ) : (
+                            <img alt="product-img" style={{ maxWidth: 300 }} height={300} src={URL.createObjectURL(dataForm.image)} />
+                        )}
                     </Stack>
                     <Stack
                         sx={{
@@ -68,29 +162,59 @@ const CreateProduct = () => {
                             noValidate
                             autoComplete="off"
                         >
-                            <TextField required id="name" label="Tên sản phẩm" defaultValue="Hoa hướng dương" />
-                            <TextField required id="quantity" label="Số lượng" type="number" defaultValue={10} />
-                            <TextField required id="quantity" label="Số lượng sản phầm đã bán" type="number" defaultValue={2} />
+                            <TextField
+                                required
+                                id="name"
+                                label="Tên sản phẩm"
+                                value={dataForm.name}
+                                onChange={(e) => handleChangeInput('name', e.target.value)}
+                            />
+                            <TextField
+                                required
+                                id="quantity"
+                                label="Số lượng"
+                                type="number"
+                                value={dataForm.total}
+                                onChange={(e) => handleChangeInput('total', e.target.value)}
+                            />
+                            <TextField
+                                required
+                                id="quantity"
+                                value={dataForm.sold}
+                                onChange={(e) => handleChangeInput('sold', e.target.value)}
+                                label="Số lượng sản phầm đã bán"
+                                type="number"
+                            />
                             <TextField
                                 required
                                 id="price"
                                 label="Giá sản phẩm"
                                 type="number"
                                 defaultValue={299000}
-                                helperText={`${'299000'.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} VNĐ`}
+                                value={dataForm.price}
+                                onChange={(e) => handleChangeInput('price', e.target.value)}
+                                helperText={`${(dataForm.price || 0).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} VNĐ`}
                             />
                             <Autocomplete
                                 multiple
                                 id="type2"
                                 options={listType}
-                                defaultValue={[listType[1]]}
+                                value={dataForm.type}
+                                onChange={(e, value) => handleChangeInput('type', value)}
                                 renderInput={(params) => <TextField {...params} label="Loại sản phẩm" placeholder="Phân loại" />}
                             />
-                            <TextField id="note" label="Ghi chú" multiline rows={5} defaultValue="Ghi chú cho sản phẩm" />
+                            <TextField
+                                id="note"
+                                label="Ghi chú"
+                                multiline
+                                rows={5}
+                                value={dataForm.note}
+                                onChange={(e) => handleChangeInput('note', e.target.value)}
+                            />
                             <Typography variant="h5" sx={{ mb: 1 }}>
                                 Phân loại sản phẩm
                             </Typography>
-                            {category.map((item, index) => (
+                            {(dataForm.category || [])?.map((item, index) => (
                                 <Box
                                     key={index}
                                     sx={{
@@ -113,17 +237,38 @@ const CreateProduct = () => {
                                         }
                                     }}
                                 >
-                                    <TextField label="Loại" id="category-type" value={item.type} size="small" />
+                                    <TextField
+                                        label="Loại"
+                                        id="category-type"
+                                        value={item.type}
+                                        size="small"
+                                        onChange={(e) => handleChangeInput(['category', 'type', index], e.target.value)}
+                                    />
                                     <Autocomplete
                                         id="type"
                                         sx={{ width: 300 }}
                                         size="small"
                                         options={listType}
                                         value={item.category}
+                                        onChange={(e, value) => handleChangeInput(['category', 'category', index], value)}
                                         renderInput={(params) => <TextField {...params} label="Loại sản phẩm" placeholder="Phân loại" />}
                                     />
-                                    <TextField label="Số lượng" id="category-number" type="number" value={item.total} size="small" />
-                                    <TextField label="Đã bán" id="category-number" type="number" value={item.sold} size="small" />
+                                    <TextField
+                                        label="Số lượng"
+                                        id="category-number"
+                                        type="number"
+                                        onChange={(e) => handleChangeInput(['category', 'total', index], e.target.value)}
+                                        value={item.total}
+                                        size="small"
+                                    />
+                                    <TextField
+                                        label="Đã bán"
+                                        id="category-number"
+                                        type="number"
+                                        onChange={(e) => handleChangeInput(['category', 'sold', index], e.target.value)}
+                                        value={item.sold}
+                                        size="small"
+                                    />
                                     <RemoveCircleIcon
                                         onClick={() => handleRemoveCategory(item.id)}
                                         color="secondary"
@@ -143,13 +288,13 @@ const CreateProduct = () => {
 
                             <CKEditor
                                 editor={ClassicEditor}
-                                data="<p>Mô tả sản phẩm</p>"
+                                data={dataForm.description}
                                 onReady={(editor) => {
                                     console.log('Editor is ready to use!', editor);
                                 }}
                                 onChange={(event, editor) => {
                                     const data = editor.getData();
-                                    console.log({ event, editor, data });
+                                    handleChangeInput('description', data);
                                 }}
                                 onBlur={(event, editor) => {
                                     console.log('Blur.', editor);
@@ -159,7 +304,14 @@ const CreateProduct = () => {
                                 }}
                             />
                         </Box>
-                        <Button color="secondary" variant="contained" endIcon={<AddIcon />} sx={{ width: 200, marginLeft: 'auto', mt: 3 }}>
+                        <Button
+                            color="secondary"
+                            disabled={loading}
+                            onClick={handleSubmit}
+                            variant="contained"
+                            endIcon={<AddIcon />}
+                            sx={{ width: 200, marginLeft: 'auto', mt: 3 }}
+                        >
                             Thêm mới sản phẩm
                         </Button>
                     </Stack>
