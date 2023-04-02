@@ -8,12 +8,17 @@ import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } fro
 // mock
 import PRODUCTS from '_mock/products';
 import { useNavigate } from 'react-router-dom';
+import { getDocs, collection } from 'firebase/firestore';
+import { firestore } from '../../../firebase';
+import { FIRESTORE } from '../../../constants';
+import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
 export default function ProductsPage() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState(false);
+    const [products, setProducts] = useState([]);
 
     const handleOpenFilter = () => {
         setOpenFilter(true);
@@ -22,6 +27,22 @@ export default function ProductsPage() {
     const handleCloseFilter = () => {
         setOpenFilter(false);
     };
+
+    const findAll = async () => {
+        const doc_refs = await getDocs(collection(firestore, FIRESTORE.PRODUCTS));
+        const res = [];
+        doc_refs.forEach((country) => {
+            res.push({
+                ...country.data()
+            });
+        });
+        setProducts(res);
+        return res;
+    };
+
+    useEffect(() => {
+        findAll();
+    }, []);
 
     return (
         <>
@@ -49,7 +70,7 @@ export default function ProductsPage() {
                     </Stack>
                 </Stack>
 
-                <ProductList products={PRODUCTS} />
+                <ProductList products={products} />
                 <ProductCartWidget />
             </Container>
         </>
