@@ -11,6 +11,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 const Products = Loadable(lazy(() => import('views/utilities/Products')));
 const CreateProducts = Loadable(lazy(() => import('views/utilities/Products/createProduct')));
 const Money = Loadable(lazy(() => import('views/utilities/Money')));
+const EditMoney = Loadable(lazy(() => import('views/utilities/Money/editMoney')));
 
 // sample page routing
 const Orders = Loadable(lazy(() => import('views/utilities/Orders')));
@@ -44,6 +45,10 @@ const MainRoutes = {
         {
             path: '/money',
             element: <Money />
+        },
+        {
+            path: '/money/edit/:month',
+            element: <EditMoney />
         }
     ]
 };

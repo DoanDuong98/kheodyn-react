@@ -69,7 +69,7 @@ export default function ShopProductCard({ product }) {
                             {priceSale && fCurrency(priceSale)}
                         </Typography> */}
                         {/* &nbsp; */}
-                        {fCurrency(price)}
+                        {price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} VNĐ
                     </Typography>
                 </Stack>
             </Stack>
