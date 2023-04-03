@@ -48,8 +48,7 @@ export default function ProductsPage() {
                         <ProductSort />
                     </Stack>
                 </Stack>
-
-                <ProductList products={PRODUCTS} />
+                <ProductList products={PRODUCTS} onClick={() => navigate('/products/1')}></ProductList>
                 <ProductCartWidget />
             </Container>
         </>
