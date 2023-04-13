@@ -19,7 +19,10 @@ export default function EditMoney(props) {
     const handleChangeInput = (id, key, value) => {
         const newData = [...dataForm];
         const findIndex = newData.findIndex((x) => x.id == id);
-        if (findIndex > -1) newData[findIndex][key] = value;
+        if (findIndex > -1) {
+            newData[findIndex][key] = value;
+            newData[findIndex]['price'] = newData[findIndex]['qty'] * newData[findIndex]['unit'];
+        }
         setDataForm(newData);
     };
     const handleAddItem = () => setDataForm([...dataForm, { id: new Date().getTime(), name: '', unit: '', total: 0 }]);
@@ -87,24 +90,15 @@ export default function EditMoney(props) {
             noValidate
             autoComplete="off"
         >
-            <Typography variant="h2" component="h2">
+            <Typography variant="h2" component="h2" sx={{ paddingBottom: 5 }}>
                 Chỉnh sửa quản lí thu chi tháng 4
             </Typography>
-            <Button
-                onClick={handleAddItem}
-                color="secondary"
-                variant="contained"
-                endIcon={<AddIcon />}
-                sx={{ width: '130px !important', mb: 2, mt: 2 }}
-            >
-                Thêm mục
-            </Button>
             {dataForm?.map((item, index) => (
                 <Box
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        '& .MuiTextField-root': { marginRight: 2, width: '100%' }
+                        '& .MuiTextField-root': { marginRight: 2, paddingBottom: 2, width: '100%' }
                     }}
                 >
                     <TextField
@@ -134,13 +128,12 @@ export default function EditMoney(props) {
                         type="number"
                     />
                     <TextField
-                        value={item.price}
-                        onChange={(e) => handleChangeInput(item.id, 'price', e.target.value)}
+                        value={item.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                         required
                         id="outlined-basic"
                         label="Tiền"
                         variant="outlined"
-                        type="number"
+                        disabled
                     />
                     <RemoveCircleIcon onClick={() => handleRemoveCategory(item.id)} color="secondary" sx={{ mb: 0, cursor: 'pointer' }} />
                 </Box>
@@ -150,12 +143,29 @@ export default function EditMoney(props) {
                     color="secondary"
                     onClick={handleSubmit}
                     disabled={loading}
-                    variant="contained"
+                    variant="outlined"
                     sx={{ textAlign: 'center', width: '130px !important', mb: 2, mt: 2, marginLeft: 'auto' }}
                 >
                     Chỉnh sửa
                 </Button>
             )}
+            <Button
+                onClick={handleAddItem}
+                color="secondary"
+                variant="contained"
+                endIcon={<AddIcon />}
+                sx={{ width: '130px !important', mb: 2, mt: 2 }}
+            >
+                Thêm mục
+            </Button>
+            <Button
+                onClick={() => navigate('/money')}
+                color="secondary"
+                variant="contained"
+                sx={{ width: '200px !important', mb: 2, mt: 2 }}
+            >
+                Quay về màn danh sách
+            </Button>
         </Box>
     );
 }
