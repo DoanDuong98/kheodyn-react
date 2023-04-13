@@ -47,7 +47,7 @@ const MainRoutes = {
             element: <Money />
         },
         {
-            path: '/money/edit/:month',
+            path: '/money/edit',
             element: <EditMoney />
         }
     ]

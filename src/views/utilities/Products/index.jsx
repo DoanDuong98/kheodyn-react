@@ -6,7 +6,6 @@ import AddIcon from '@mui/icons-material/Add';
 // components
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from 'ui-component/products';
 // mock
-import PRODUCTS from '_mock/products';
 import { useNavigate } from 'react-router-dom';
 import { getDocs, collection } from 'firebase/firestore';
 import { firestore } from '../../../firebase';
@@ -31,9 +30,9 @@ export default function ProductsPage() {
     const findAll = async () => {
         const doc_refs = await getDocs(collection(firestore, FIRESTORE.PRODUCTS));
         const res = [];
-        doc_refs.forEach((country) => {
+        doc_refs.forEach((product) => {
             res.push({
-                ...country.data()
+                ...product.data()
             });
         });
         setProducts(res);

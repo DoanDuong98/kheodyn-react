@@ -4,8 +4,17 @@ import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Typography } from '@mui/material';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { NotificationManager } from 'react-notifications';
+import { firestore } from '../../../firebase';
+import { collection, query, where, getDocs, setDoc, doc } from 'firebase/firestore';
+import { FIRESTORE } from '../../../constants';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-export default function EditMoney() {
+export default function EditMoney(props) {
+    const [loading, setLoading] = React.useState(false);
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const queryTime = searchParams.get('time');
     const [dataForm, setDataForm] = React.useState([]);
     const handleChangeInput = (id, key, value) => {
         const newData = [...dataForm];
@@ -18,6 +27,56 @@ export default function EditMoney() {
     const handleRemoveCategory = (id) => {
         const newList = [...dataForm].filter((item) => item.id !== id);
         setDataForm([...newList]);
+    };
+    const findAll = async () => {
+        const q = query(collection(firestore, FIRESTORE.MONEY), where('time', '==', queryTime));
+        const querySnapshot = await getDocs(q);
+        const res = [];
+        querySnapshot.forEach((money) => {
+            res.push({
+                ...money?.data()
+            });
+        });
+        if (res[0]?.data) {
+            const newData = JSON.parse(res[0].data);
+            setDataForm(newData);
+        } else setDataForm([]);
+    };
+
+    React.useEffect(() => {
+        if (queryTime) findAll();
+    }, [queryTime]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        if (!dataForm.length) {
+            NotificationManager.warning('Vui lòng điền đầy đủ các trường!', 'Thông báo');
+            setLoading(false);
+            return;
+        }
+
+        const dataBody = {
+            data: JSON.stringify(dataForm),
+            time: `${new Date().getMonth() + 1}-${new Date().getFullYear()}`,
+            created_at: new Date().valueOf(),
+            updated_at: new Date().valueOf(),
+            deleted_at: ''
+        };
+        const moneyRef = collection(firestore, FIRESTORE.MONEY);
+        setDoc(doc(moneyRef, `${new Date().getMonth() + 1}-${new Date().getFullYear()}`), dataBody)
+            .then((response) => {
+                console.log(response);
+                NotificationManager.success('Tạo mới thành công!', 'Thông báo');
+                navigate('/money');
+            })
+            .catch((err) => {
+                console.log(err);
+                NotificationManager.error('Có lỗi xảy ra!', 'Thông báo');
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
     return (
         <Box
@@ -57,6 +116,15 @@ export default function EditMoney() {
                         onChange={(e) => handleChangeInput(item.id, 'name', e.target.value)}
                     />
                     <TextField
+                        required
+                        id="outlined-basic"
+                        label="Số lượng"
+                        variant="outlined"
+                        value={item.qty}
+                        type="number"
+                        onChange={(e) => handleChangeInput(item.id, 'qty', e.target.value)}
+                    />
+                    <TextField
                         value={item.unit}
                         onChange={(e) => handleChangeInput(item.id, 'unit', e.target.value)}
                         required
@@ -66,8 +134,8 @@ export default function EditMoney() {
                         type="number"
                     />
                     <TextField
-                        value={item.total}
-                        onChange={(e) => handleChangeInput(item.id, 'total', e.target.value)}
+                        value={item.price}
+                        onChange={(e) => handleChangeInput(item.id, 'price', e.target.value)}
                         required
                         id="outlined-basic"
                         label="Tiền"
@@ -80,6 +148,8 @@ export default function EditMoney() {
             {!!dataForm?.length && (
                 <Button
                     color="secondary"
+                    onClick={handleSubmit}
+                    disabled={loading}
                     variant="contained"
                     sx={{ textAlign: 'center', width: '130px !important', mb: 2, mt: 2, marginLeft: 'auto' }}
                 >
