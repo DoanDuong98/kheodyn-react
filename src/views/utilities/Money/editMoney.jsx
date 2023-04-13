@@ -128,7 +128,7 @@ export default function EditMoney(props) {
                         type="number"
                     />
                     <TextField
-                        value={item.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
+                        value={(item.price || '0')?.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                         required
                         id="outlined-basic"
                         label="Tiền"
@@ -162,7 +162,7 @@ export default function EditMoney(props) {
                 onClick={() => navigate('/money')}
                 color="secondary"
                 variant="contained"
-                sx={{ width: '200px !important', mb: 2, mt: 2 }}
+                sx={{ width: '250px !important', mb: 2, mt: 2 }}
             >
                 Quay về màn danh sách
             </Button>
