@@ -50,7 +50,7 @@ const ViewProduct = () => {
                             borderRadius: 1
                         }}
                     >
-                        <img alt="product-img" style={{ maxWidth: 300 }} height={300} src={URL.createObjectURL(dataForm.image)} />
+                        {/* <img alt="product-img" style={{ maxWidth: 300 }} height={300} src={URL.createObjectURL(dataForm.image)} /> */}
                     </Stack>
                     <Stack
                         sx={{
@@ -60,11 +60,12 @@ const ViewProduct = () => {
                         <Box
                             component="form"
                             sx={{
-                                '& .MuiTextField-root': { mb: 4, width: '100%' }
+                                '& .MuiTextField-root': { mb: 4, mt: 3, width: '100%' }
                             }}
                             noValidate
                             autoComplete="off"
                         >
+                            <Box>Tên sản phẩm: Hoa hướng dương</Box>
                             <TextField id="name" label="Tên sản phẩm" defaultValue="Hoa hướng dương" />
                             <TextField required id="quantity" label="Số lượng" type="number" defaultValue={10} />
                             <TextField required id="quantity" label="Số lượng sản phầm đã bán" type="number" defaultValue={2} />
