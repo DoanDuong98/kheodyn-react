@@ -7,6 +7,7 @@ import { fCurrency } from 'utils/formatNumber';
 // components
 import Label from 'components/label';
 import { ColorPreview } from 'components/color-utils';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -25,10 +26,11 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-    const { name, cover, price, colors, status, priceSale } = product;
+    const { name, image, price, status } = product;
+    const navigate = useNavigate();
 
     return (
-        <Card>
+        <Card onClick={() => navigate('/products/1')}>
             <Box sx={{ pt: '100%', position: 'relative' }}>
                 {status && (
                     <Label
@@ -45,7 +47,7 @@ export default function ShopProductCard({ product }) {
                         {status}
                     </Label>
                 )}
-                <StyledProductImg alt={name} src={cover} />
+                <StyledProductImg alt={name} src={image} />
             </Box>
 
             <Stack spacing={2} sx={{ p: 3 }}>
@@ -56,9 +58,9 @@ export default function ShopProductCard({ product }) {
                 </Link>
 
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
-                    <ColorPreview colors={colors} />
+                    {/* <ColorPreview colors={colors} /> */}
                     <Typography variant="subtitle1">
-                        <Typography
+                        {/*     <Typography
                             component="span"
                             variant="body1"
                             sx={{
@@ -67,9 +69,9 @@ export default function ShopProductCard({ product }) {
                             }}
                         >
                             {priceSale && fCurrency(priceSale)}
-                        </Typography>
-                        &nbsp;
-                        {fCurrency(price)}
+                        </Typography> */}
+                        {/* &nbsp; */}
+                        {price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} VNĐ
                     </Typography>
                 </Stack>
             </Stack>
