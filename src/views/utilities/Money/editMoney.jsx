@@ -53,7 +53,7 @@ export default function EditMoney(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
-        if (!dataForm.length) {
+        if (!dataForm.every((item) => Object.values(item).filter((x) => !x).length == 0)) {
             NotificationManager.warning('Vui lòng điền đầy đủ các trường!', 'Thông báo');
             setLoading(false);
             return;

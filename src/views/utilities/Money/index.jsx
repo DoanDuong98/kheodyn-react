@@ -121,7 +121,7 @@ export default function SpanningTable() {
                                 <TableCell align="right">{row.qty}</TableCell>
                                 <TableCell align="right">{row.unit}</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 600 }}>
-                                    {row.price.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
+                                    {row.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                                 </TableCell>
                             </TableRow>
                         ))}
