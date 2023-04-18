@@ -7,6 +7,7 @@ import { fCurrency } from 'utils/formatNumber';
 // components
 import Label from 'components/label';
 import { ColorPreview } from 'components/color-utils';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -25,10 +26,11 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-    const { name, image, price, status } = product;
+    const { name, image, price, status, id } = product;
+    const navigate = useNavigate();
 
     return (
-        <Card>
+        <Card onClick={() => navigate(`/products/edit/${id}`)}>
             <Box sx={{ pt: '100%', position: 'relative' }}>
                 {status && (
                     <Label
