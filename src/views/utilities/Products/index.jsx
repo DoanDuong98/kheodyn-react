@@ -6,14 +6,18 @@ import AddIcon from '@mui/icons-material/Add';
 // components
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from 'ui-component/products';
 // mock
-import PRODUCTS from '_mock/products';
 import { useNavigate } from 'react-router-dom';
+import { getDocs, collection } from 'firebase/firestore';
+import { firestore } from '../../../firebase';
+import { FIRESTORE } from '../../../constants';
+import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
 export default function ProductsPage() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState(false);
+    const [products, setProducts] = useState([]);
 
     const handleOpenFilter = () => {
         setOpenFilter(true);
@@ -22,6 +26,22 @@ export default function ProductsPage() {
     const handleCloseFilter = () => {
         setOpenFilter(false);
     };
+
+    const findAll = async () => {
+        const doc_refs = await getDocs(collection(firestore, FIRESTORE.PRODUCTS));
+        const res = [];
+        doc_refs.forEach((product) => {
+            res.push({
+                ...product.data()
+            });
+        });
+        setProducts(res);
+        return res;
+    };
+
+    useEffect(() => {
+        findAll();
+    }, []);
 
     return (
         <>
@@ -48,7 +68,7 @@ export default function ProductsPage() {
                         <ProductSort />
                     </Stack>
                 </Stack>
-                <ProductList products={PRODUCTS} onClick={() => navigate('/products/1')}></ProductList>
+                <ProductList products={products} onClick={() => navigate('/products/1')}></ProductList>
                 <ProductCartWidget />
             </Container>
         </>
