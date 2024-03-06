@@ -69,7 +69,6 @@ const FirebaseLogin = ({ ...others }) => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 dispatch({ type: SET_CURRENT_USER, user }); // Lưu data
-                localStorage.setItem('user', JSON.stringify({ user: user.providerData, uid: user.uid }));
                 localStorage.setItem('accessToken', user.accessToken);
                 NotificationManager.success('Đăng nhập thành công!', 'Thông báo');
                 // Tìm user trong bảng user trong firestore với user.email = email trong firestore
@@ -77,6 +76,7 @@ const FirebaseLogin = ({ ...others }) => {
                 // Nếu là admin thì chuyển đến /admin/dashboard => có 1 layout cho admin riêng, có sidebar
                 // Nếu là user thì chuyển đến màn /posts => không có sidebar
                 // Lưu data user của firestore
+                localStorage.setItem('user', JSON.stringify({ user: user.providerData, uid: user.uid })); // Lưu vào local
                 dispatch({ type: SET_CURRENT_USER, user }); // Lưu data
                 navigate('/dashboard');
             })

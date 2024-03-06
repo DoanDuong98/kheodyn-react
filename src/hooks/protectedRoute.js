@@ -16,6 +16,7 @@ export const ProtectedRoute = ({ children }) => {
     //     const user = useSelector((state) => state.customization.user);
     // check../
 
+    // Hoặc lấy data user ra localStorage
 
     //. Check role
     // Chia route cho admin và user
