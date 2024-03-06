@@ -68,15 +68,17 @@ const FirebaseLogin = ({ ...others }) => {
         signInWithEmailAndPassword(auth, body?.email, body?.password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                dispatch({ type: SET_CURRENT_USER, user });
+                dispatch({ type: SET_CURRENT_USER, user }); // Lưu data
                 localStorage.setItem('user', JSON.stringify({ user: user.providerData, uid: user.uid }));
                 localStorage.setItem('accessToken', user.accessToken);
                 NotificationManager.success('Đăng nhập thành công!', 'Thông báo');
-                navigate('/dashboard');
                 // Tìm user trong bảng user trong firestore với user.email = email trong firestore
                 // Nếu tìm thấy thì check role = user hay admin
                 // Nếu là admin thì chuyển đến /admin/dashboard => có 1 layout cho admin riêng, có sidebar
                 // Nếu là user thì chuyển đến màn /posts => không có sidebar
+                // Lưu data user của firestore
+                dispatch({ type: SET_CURRENT_USER, user }); // Lưu data
+                navigate('/dashboard');
             })
             .catch((error) => {
                 const errorCode = error.code;
