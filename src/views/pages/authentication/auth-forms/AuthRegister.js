@@ -55,10 +55,13 @@ const FirebaseRegister = ({ ...others }) => {
     const [level, setLevel] = useState();
 
     const registerUser = (body) => {
+        // Check trong firestore xem có user nào dùng email đấy chưa
+        // chỉnh sửa mes
         createUserWithEmailAndPassword(auth, body?.email, body?.password)
             .then((userCredential) => {
                 const user = userCredential.user;
                 NotificationManager.success('Đăng kí thành công rồi he!', 'Thông báo');
+                // Lưu thông tin vào DB firestore
                 navigate('/login');
             })
             .catch((error) => {
